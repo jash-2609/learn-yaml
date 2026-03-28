@@ -7,3 +7,10 @@ jobs:
     steps:
       - name: say hello
         run: echo "Hello from github actions"
+
+      - name: show current directory  
+        run: pwd
+
+      - name: list files
+        run: ls
+        
