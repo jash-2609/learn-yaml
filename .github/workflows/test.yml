@@ -1,0 +1,9 @@
+name: first-workflow
+on: push
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: say hello
+        run: run "Hello from github actions"
