@@ -1,16 +1,54 @@
-name: first-workflow
-on: push
+name: advanced-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  APP_NAME: my-app
+
 jobs:
-  hello:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: say hello
-        run: echo "Hello from github actions"
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: show current directory  
-        run: pwd
+      - name: Show environment variable
+        run: echo "App name is $APP_NAME"
 
-      - name: list files
-        run: ls
-        
+      - name: Use secret
+        env:
+          MY_SECRET: ${{ secrets.MY_SECRET }}
+        run: echo "Using secret"
+
+      - name: Create file
+        run: echo "Hello from GitHub Actions" > output.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: output-file
+          path: output.txt
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: output-file
+
+      - name: Show file content
+        run: cat output.txt
+
+      - name: Simulate deployment
+        run: echo "Deploying application..."
+
+      - name: Rollback (if failure)
+        if: failure()
+        run: echo "Rolling back to previous version"
